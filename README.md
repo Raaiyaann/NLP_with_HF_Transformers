@@ -1,1 +1,1 @@
-<h1>Natural Language Processing with Hugging Face Transformers</h1>
+<h1 style="text-align:center;">Natural Language Processing with Hugging Face Transformers</h1>
