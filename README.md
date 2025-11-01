@@ -15,67 +15,63 @@
 ### 1. Example 1 - Sentiment Analysis
 
 ```
-# TODO :
-classifier = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
-classifier("I am doing this on a regular basis, baking a cake in the morning!")
+# TODO
+original_model = pipeline("sentiment-analysis")
+data ="This vehicle has changed my life.  Full self driving has decreased my workday, commute stress, and when I want control , I have never driven anything that handles so well and accelerates so smoothly. Love my new model Y!"
+original_model(data)
 ```
 
 Result : 
 
 ```
-[{'label': 'POSITIVE', 'score': 0.9959210157394409}]
+[{'label': 'POSITIVE', 'score': 0.9995622038841248}]
 ```
 
 Analysis on example 1 : 
 
-The sentiment analysis classifier accurately detects the positive tone in the given sentence. It shows a high confidence score, indicating that the model is reliable for straightforward emotional expressions, such as enthusiasm or joy, in English-language input.
+jadi setniment analisis pada review sebuah mobil tesla yang merek terbaru di twitter itu menunjukkan jenis review positive dengan tingkat keyakinan sebesar 99 % 
 
 
 ### 2. Example 2 - Topic Classification
 
 ```
-# TODO :
-classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
-classifier(
-    "Cats are beloved domestic companions known for their independence and agility. These fascinating creatures exhibit a range of behaviors, from playful pouncing to peaceful purring. With their sleek fur, captivating eyes, and mysterious charm, cats have captivated humans for centuries, becoming cherished members of countless households worldwide.",
-    candidate_labels=["science", "pet", "machine learning"],
+# TODO
+topik_classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+topik_classifier(
+    "Cybersecurity is the practice of protecting systems, networks, and sensitive data from unauthorized access, attacks, and disruption. Modern threats include phishing, ransomware, and data breaches, so organizations need prevention, monitoring, and incident response.",
+    candidate_labels=["cybersecurity", "finance", "healthcare"],
 )
 ```
 
 Result : 
 
 ```
-{'sequence': 'Cats are beloved domestic companions known for their independence and agility. These fascinating creatures exhibit a range of behaviors, from playful pouncing to peaceful purring. With their sleek fur, captivating eyes, and mysterious charm, cats have captivated humans for centuries, becoming cherished members of countless households worldwide.',
- 'labels': ['pet', 'machine learning', 'science'],
- 'scores': [0.9174826145172119, 0.048576705157756805, 0.03394068405032158]}
+{'sequence': 'Cybersecurity is the practice of protecting systems, networks, and sensitive data from unauthorized access, attacks, and disruption. Modern threats include phishing, ransomware, and data breaches, so organizations need prevention, monitoring, and incident response.',
+ 'labels': ['cybersecurity', 'finance', 'healthcare'],
+ 'scores': [0.992111086845398, 0.004041106905788183, 0.0038478232454508543]}
 ```
 
 Analysis on example 2 : 
 
-The zero-shot classifier correctly identifies "pet" as the most relevant label, with a high confidence score. This shows the model's strong ability to associate descriptive context with predefined categories, even without task-specific fine-tuning or training on the input text.
+model zero-shot classifier yang digunakan disini berhasil mengidentifikasi kalau topik pada teks tersebut itu mengenai cybersecurity dengan tingkat keyakinan 99 %, jika dibandingkan dengan label yang lain yang tersedia itu itu seperti finance dengan healthcare hanya mendapatkan score 0.004% dan 0.003% yang artinya tidak sesuai dengan data topik yang diberikan.
 
 ### 3. Example 3 and 3.5 - Text Generator
 
 ```
 # TODO :
-generator = pipeline("text-generation", model="distilgpt2") # or change to gpt-2
-generator(
-    "This cooking will make you",
-    max_length=30, # you can change this
-    num_return_sequences=2, # and this too
-)
+generator = pipeline("text-generation", model="gpt2")
+generator("this time i will")
 ```
 
 Result : 
 
 ```
-[{'generated_text': 'This cooking will make you even richer. I used to work too little, I thought it was kind of ridiculous to take it that far. I was'},
- {'generated_text': 'This cooking will make you feel alive for hours every afternoon. It would also help keep your children in school throughout the day.\n\n\nOne of'}]
+[{'generated_text': "this time i will stop going to this place and start going again}.
 ```
 
 Analysis on example 3 : 
 
-The text generation model produces coherent and imaginative continuations of a cooking-themed prompt. It demonstrates creativity and sentence flow, although output content may vary in tone and logic. The results showcase the model's usefulness for generating casual or narrative text.
+model text generation berhasil menghasilkan beberapa kalimat yang baru yang sesuai dengan konteks kalimat sebelumnya seperti "this time i will", dengan di generate-nya teks baru yang menghasilkan kalimat seperti "this time i will stop going to this place and start going again" .
 
 ```
 unmasker = pipeline("fill-mask", "distilroberta-base")
