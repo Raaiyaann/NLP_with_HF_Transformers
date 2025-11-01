@@ -75,99 +75,125 @@ model text generation berhasil menghasilkan beberapa kalimat yang baru yang sesu
 
 ```
 unmasker = pipeline("fill-mask", "distilroberta-base")
-unmasker("This person is the one who <mask> my purse", top_k=4)
+unmasker(" I <mask> You ", top_k=4)
 ```
 
 Result : 
 
 ```
-[{'score': 0.8569591641426086,
-  'token': 8268,
-  'token_str': ' stole',
-  'sequence': 'This person is the one who stole my purse'},
- {'score': 0.030922001227736473,
-  'token': 25702,
-  'token_str': ' snatched',
-  'sequence': 'This person is the one who snatched my purse'},
- {'score': 0.02246157079935074,
-  'token': 12297,
-  'token_str': ' steals',
-  'sequence': 'This person is the one who steals my purse'},
- {'score': 0.01934182271361351,
-  'token': 2263,
-  'token_str': ' broke',
-  'sequence': 'This person is the one who broke my purse'}]
+[{'score': 0.53789883852005,
+  'token': 3437,
+  'token_str': ' Love',
+  'sequence': ' I Love You '},
+ {'score': 0.09510327875614166,
+  'token': 4250,
+  'token_str': ' See',
+  'sequence': ' I See You '},
+ {'score': 0.05283082276582718,
+  'token': 27032,
+  'token_str': ' Hate',
+  'sequence': ' I Hate You '},
+ {'score': 0.04998588189482689,
+  'token': 3837,
+  'token_str': ' Thank',
+  'sequence': ' I Thank You '}]
 ```
 
 Analysis on example 3.5 : 
 
-The fill-mask pipeline accurately infers masked words based on context. The top result "stole" makes sense, supported by a high confidence score. Other predictions are also contextually appropriate, illustrating the model's nuanced understanding of sentence structure and intent.
+model fill-mask ini berhasil mengisi beberapa kata untuk melengkapi kalimat yang sudah di sediakan .
 
 ### 4. Example 4 - Name Entity Recognition (NER)
 
 ```
 # TODO :
 ner = pipeline("ner", model="dbmdz/bert-large-cased-finetuned-conll03-english", grouped_entities=True)
-ner("My name is Arifian, I am an AI Technical Mentor at Infinite Learning, Batam Island")
+ner(
+    "My name is Mohammad Raiyan. I am currently studying Computer Science at Tadulako University in Palu, Indonesia, and I previously completed an internship at Microsoft in Singapore."
+)
 ```
 
 Result : 
 
 ```
 [{'entity_group': 'PER',
-  'score': np.float32(0.9978566),
-  'word': 'Arifian',
+  'score': np.float32(0.99907947),
+  'word': 'Mohammad Raiyan',
   'start': 11,
-  'end': 18},
+  'end': 26},
  {'entity_group': 'ORG',
-  'score': np.float32(0.7615841),
-  'word': 'AI',
-  'start': 28,
-  'end': 30},
- {'entity_group': 'ORG',
-  'score': np.float32(0.9623977),
-  'word': 'Infinite Learning',
-  'start': 51,
+  'score': np.float32(0.32507682),
+  'word': 'Computer',
+  'start': 52,
+  'end': 60},
+ {'entity_group': 'MISC',
+  'score': np.float32(0.415785),
+  'word': 'Science',
+  'start': 61,
   'end': 68},
+ {'entity_group': 'ORG',
+  'score': np.float32(0.99373794),
+  'word': 'Tadulako University',
+  'start': 72,
+  'end': 91},
  {'entity_group': 'LOC',
-  'score': np.float32(0.9913697),
-  'word': 'Batam Island',
-  'start': 70,
-  'end': 82}]
+  'score': np.float32(0.9642228),
+  'word': 'Palu',
+  'start': 95,
+  'end': 99},
+ {'entity_group': 'LOC',
+  'score': np.float32(0.99935406),
+  'word': 'Indonesia',
+  'start': 101,
+  'end': 110},
+ {'entity_group': 'ORG',
+  'score': np.float32(0.99932563),
+  'word': 'Microsoft',
+  'start': 156,
+  'end': 165},
+ {'entity_group': 'LOC',
+  'score': np.float32(0.9997336),
+  'word': 'Singapore',
+  'start': 169,
+  'end': 178}]
 ```
 
 Analysis on example 4 : 
 
-The named entity recognizer successfully identifies personal, organizational, and location entities from the sentence. Grouped outputs are relevant and accurate, with high confidence scores, demonstrating the model’s effectiveness in real-world applications like information extraction or document tagging.
+untuk  named entity recognizer berhasil mengidentifikasi nama orang, tempat dan nama brand seperti "mohammad raiyan" untuk nama, "computer" nama device, "microsoft" untuk nama brand dan masih banyak lagi yang berhasil di identifikasi .
 
 ### 5. Example 5 - Question Answering
 
 ```
 # TODO :
 qa_model = pipeline("question-answering", model="distilbert-base-cased-distilled-squad")
-question = "What four-legged animal sometimes comes inside the house and likes to sleep?"
-context = "Four-legged animal that sometimes comes inside the house and likes to sleep is a cat"
+question = "Who was the command module pilot who orbited the Moon?"
+context = "The Apollo 11 mission was a historic moment in human exploration. It was the specific spaceflight conducted by NASA, the United States' space agency, that first landed humans on the Moon. The mission launched on July 16, 1969. The commander of the mission was Neil Armstrong, and the lunar module pilot was Buzz Aldrin. Armstrong was the first person to step onto the lunar surface on July 21, 1969, and he famously uttered the words, 'That's one small step for [a] man, one giant leap for mankind.' Michael Collins served as the command module pilot, orbiting the Moon while Armstrong and Aldrin were on the surface."
 qa_model(question = question, context = context)
 ```
 
 Result : 
 
 ```
-{'score': 0.6314472556114197, 'start': 79, 'end': 84, 'answer': 'a cat'}
+{'score': 0.9751918911933899,
+ 'start': 500,
+ 'end': 515,
+ 'answer': 'Michael Collins'}
 ```
 
 Analysis on example 5 : 
 
-The question-answering model correctly extracts the most relevant phrase "a cat" from the provided context. Its confidence score is decent, and the model showcases strong capabilities in understanding natural questions and matching them with the most likely answer span.
+model question-answering berhasil menjawab pertanyaan yang dibuat dari teks yang sangat panjang dengan tingkat keyakinan 97% yang artinya sudah cukup baik dalam menjawab pertanyaan.
 
 ### 6. Example 6 - Text Summarization
 
 ```
 # TODO :
-summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", max_length=59)
+
 summarizer(
     """
-Machine Learning adalah cabang dari Kecerdasan Buatan yang memungkinkan sistem komputer untuk belajar dari data tanpa diprogram secara eksplisit. 1  Melalui algoritma, mesin dapat mengidentifikasi pola, membuat prediksi, dan meningkatkan kinerja seiring waktu. Penerapannya luas, mulai dari rekomendasi produk hingga diagnosis medis, mengubah cara kita berinteraksi dengan teknologi. 
+Modern manufacturing depends on consistent product quality, because even small defects can lead to returns, safety issues, or damage to the brand's reputation. Quality control is not only about rejecting bad products at the end of the line, but about understanding why defects happen in the first place and preventing them from repeating. To do this, factories collect measurements such as weight, thickness, temperature, and pressure at every stage of production. These values are compared against tolerance limits to detect early signs of drift or abnormal behavior. If a batch begins to fall outside the acceptable range, the system can alert operators, pause the line, and trigger an investigation before the issue spreads. This approach reduces waste, improves safety, and keeps production reliable and cost-efficient.
 """
 )
 ```
@@ -175,32 +201,32 @@ Machine Learning adalah cabang dari Kecerdasan Buatan yang memungkinkan sistem k
 Result : 
 
 ```
-[{'summary_text': ' Machine Learning adalah cabang dari Kecerdasan Buatan yang memungkinkan komputer untuk belajar dari data tanpa diprogram secara eksplisit . Melalui algoritma, mesin dapat mengidentifikasi pola, membuat prediksi, dan meningkatkan kinerja seiring waktu .'}]
+[{'summary_text': ' Quality control is not only about rejecting bad products at the end of the line, but about understanding why defects happen . To do this, factories collect measurements such as weight, thickness, temperature, and pressure at every stage of production . These values are compared against tolerance limits to detect early signs of drift or abnormal behavior .'}]
 
 ```
 
 Analysis on example 6 :
 
-The summarization pipeline effectively condenses the core idea of the paragraph into a shorter version. It maintains key concepts like machine learning, pattern recognition, and practical applications, reflecting the model's strength in content compression without major loss of information.
+untuk summarization pipeline berhasil meringkas sebuah kalimat paragraf yang sangat panjang untuk memberikan point utama mengenai deskripsi teks panjang tersebut agar lebih mudah dipahami .
 
 ### 7. Example 7 - Translation
 
 ```
 # TODO :
-translator_id = pipeline("translation", model="Helsinki-NLP/opus-mt-id-fr")
-translator_id("Hari ini masak apa, chef?")
+translator = pipeline("translation_en_to_de", model="t5-small")
+print(translator("i love playing with my friends", max_length=40))
 ```
 
 Result : 
 
 ```
-[{'translation_text': "Qu'est-ce qu'on fait aujourd'hui, chef ?"}]
+[{'translation_text': 'ich liebe es, mit meinen Freunden zu spielen'}]
 
 ```
 
 Analysis on example 7 :
 
-The translation model delivers an accurate and context-aware French translation of the Indonesian sentence. It handles informal, conversational input smoothly, making it suitable for multilingual communication tasks and cross-language understanding in casual or daily scenarios.
+mode translation sudah berhasil mengubah bahasa inggris yang saya masukan menjadi bahasa german, saat saya translate kembali bahasa german yang di hasilkan ke bahasa inggris, artinya masih sama  .
 
 ---
 
